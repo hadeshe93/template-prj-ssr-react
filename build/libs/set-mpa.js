@@ -13,27 +13,26 @@ module.exports = function setMpa({ isServerSide }) {
     if (pageName) {
       entry[pageName] = entryFile;
       if (isServerSide) {
+        // 如果是构建 ssr 模式，则还需要加上客户端渲染的入口文件
         entry[`${pageName}-client`] = entryFile.replace(`${destFileName}.js`, `${destFileName}-client.js`);
       }
-      if (true || !isServerSide) {
-        htmlWebpackPluginOptions.push(
-          {
-            inlineSource: '.css$',
-            template: resolveSrcPages(`./${pageName}/index.html`),
-            filename: `${pageName}.html`,
-            chunks: [ `${pageName}-client` ],
-            inject: true,
-            minify: {
-              html5: true,
-              collapseWhitespace: true,
-              preserveLineBreaks: false,
-              minifyCSS: true,
-              minifyJS: true,
-              removeComments: false,
-            },
-          }
-        );
-      }
+      htmlWebpackPluginOptions.push(
+        {
+          inlineSource: '.css$',
+          template: resolveSrcPages(`./${pageName}/index.html`),
+          filename: `${pageName}.html`,
+          chunks: [ `${pageName}-client` ],
+          inject: true,
+          minify: {
+            html5: true,
+            collapseWhitespace: true,
+            preserveLineBreaks: false,
+            minifyCSS: true,
+            minifyJS: true,
+            removeComments: false,
+          },
+        }
+      );
     }
   });
 
